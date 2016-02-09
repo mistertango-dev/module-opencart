@@ -34,7 +34,7 @@ class ControllerPaymentMTPayment extends Controller
 
         $this->data['language_code'] = $this->language->get('code');
         $this->data['customer_email'] = $customer_email;
-        $this->data['total'] = bcdiv($order_info['total'], 1, 2);
+        $this->data['total'] = $this->currency->format(bcdiv($order_info['total'], 1, 2), '', '', false);
         $this->data['currency_code'] = $this->currency->getCode();
         $this->data['transaction_id'] = $this->session->data['order_id'] . '_' . time();
 
@@ -259,7 +259,7 @@ class ControllerPaymentMTPayment extends Controller
             $this->data['order_id'] = $order_info['order_id'];
             $this->data['language_code'] = $this->language->get('code');
             $this->data['customer_email'] = $customer_email;
-            $this->data['total'] = bcdiv($order_info['total'], 1, 2);
+            $this->data['total'] = $this->currency->format(bcdiv($order_info['total'], 1, 2), '', '', false);
             $this->data['currency_code'] = $this->currency->getCode();
             $this->data['transaction_id'] = $order_info['order_id'] . '_' . time();
             $this->data['websocket_id'] = $websocket_id;
