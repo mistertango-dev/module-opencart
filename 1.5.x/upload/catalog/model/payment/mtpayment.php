@@ -93,7 +93,7 @@ class ModelPaymentMTPayment extends Model
         $order_id = is_array($order_id->row) ? reset($order_id->row) : null;
 
         if (empty($order_id)) {
-            $this->openOrder($transaction_id, $amount);
+            $this->validateOrder($transaction_id, $amount);
 
             $order_id = $this->db->query(
                 'SELECT `order`
@@ -142,33 +142,35 @@ class ModelPaymentMTPayment extends Model
      * @param null $websocket_id
      * @return bool
      */
-    public function openOrder($transaction_id, $amount, $websocket_id = null)
+    public function validateOrder($transaction_id, $amount, $websocket_id = null)
     {
-        $transaction = explode('_', $transaction_id);
+	    $transaction = explode('_', $transaction_id);
 
-        if (count($transaction) == 2) {
-            $this->load->language('payment/mtpayment');
+	    if (count($transaction) == 2) {
+		    $this->load->language('payment/mtpayment');
+		    $this->load->model('checkout/order');
 
-            $order_id = $transaction[0];
+		    $order_id = $transaction[0];
+		    $order_info = $this->model_checkout_order->getOrder($order_id);
 
-            $comment = $this->language->get('text_instruction') . "\n\n";
-            $comment .= $this->language->get('text_payment');
+		    if (empty($order_info)) {
+			    $comment = $this->language->get('text_instruction') . "\n\n";
+			    $comment .= $this->language->get('text_payment');
 
-            $this->load->model('checkout/order');
+			    $this->model_checkout_order->confirm(
+				    $order_id,
+				    $this->config->get('mtpayment_order_pending_status_id'),
+				    $comment,
+				    true
+			    );
+		    }
 
-            $this->model_checkout_order->confirm(
-                $order_id,
-                $this->config->get('mtpayment_order_pending_status_id'),
-                $comment,
-                true
-            );
+		    $this->insertTransaction($transaction_id, $websocket_id, $order_id, $amount);
 
-            $this->insertTransaction($transaction_id, $websocket_id, $order_id, $amount);
+		    return true;
+	    }
 
-            return true;
-        }
-
-        return false;
+	    return false;
     }
 
     /**

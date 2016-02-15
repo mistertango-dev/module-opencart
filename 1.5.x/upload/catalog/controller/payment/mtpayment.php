@@ -107,7 +107,7 @@ class ControllerPaymentMTPayment extends Controller
 
             $this->load->model('payment/mtpayment');
 
-            $this->model_payment_mtpayment->openOrder($transaction, $amount, $websocket);
+            $this->model_payment_mtpayment->validateOrder($transaction, $amount, $websocket);
 
             $this->response->setOutput(json_encode(array(
                 'success' => true,

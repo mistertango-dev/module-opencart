@@ -125,7 +125,7 @@ MTPayment = {
             type: 'GET',
             async: true,
             dataType: "json",
-            url: MTPayment.order ? MTPAYMENT_URL_CONFIRM : MTPAYMENT_URL_CONFIRM,
+            url: MTPAYMENT_URL_CONFIRM,
             headers: {"cache-control": "no-cache"},
             cache: false,
             data: {
