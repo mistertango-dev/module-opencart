@@ -10,14 +10,6 @@
     <div class="middle">
         <h3><?php echo $text_history; ?></h3>
         <?php echo $histories; ?>
-        <div class="buttons">
-            <table>
-                <tr>
-                    <td align="right"><a onclick="location='<?php echo $continue; ?>'"
-                                         class="button"><span><?php echo $button_continue; ?></span></a></td>
-                </tr>
-            </table>
-        </div>
     </div>
     <div class="bottom">
         <div class="left"></div>

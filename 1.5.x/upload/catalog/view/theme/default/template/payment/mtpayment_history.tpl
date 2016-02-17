@@ -10,9 +10,6 @@
 
     <h3><?php echo $text_history; ?></h3>
     <?php echo $histories; ?>
-    <div class="buttons">
-        <div class="right"><a href="<?php echo $continue; ?>" class="button"><?php echo $button_continue; ?></a></div>
-    </div>
     <?php echo $content_bottom; ?></div>
 <script type="text/javascript">
     var MTPAYMENT_ORDER_ID = "<?php echo $order_id; ?>";
