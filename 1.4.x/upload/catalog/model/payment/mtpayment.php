@@ -145,6 +145,7 @@ class ModelPaymentMTPayment extends Model
 	    if (count($transaction) == 2) {
 		    $this->load->language('payment/mtpayment');
 		    $this->load->model('account/order');
+		    $this->load->model('checkout/order');
 
 		    $order_id = $transaction[0];
 		    $order_histories = $this->model_account_order->getOrderHistories($order_id);
