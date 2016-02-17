@@ -331,9 +331,9 @@ class ControllerPaymentMTPayment extends Controller
         return $html;
     }
 
-    /**
-     * @todo Update to latest changes from PrestaShop version
-     */
+	/**
+	 *
+	 */
     public function callback()
     {
         $this->load->model('payment/mtpayment');

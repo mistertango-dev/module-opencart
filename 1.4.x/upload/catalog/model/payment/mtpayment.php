@@ -43,14 +43,14 @@ class ModelPaymentMTPayment extends Model
      */
     public function existsCallback($callback)
     {
-        $has_duplicate = $this->db->query(
-            'SELECT 1 FROM `' . DB_PREFIX . 'mtcallbacks`
+	    $exists = $this->db->query(
+		    'SELECT 1 FROM `' . DB_PREFIX . 'mtcallbacks`
             WHERE `callback` = \'' . $this->db->escape($callback) . '\''
-        );
+	    );
 
-        $has_duplicate = is_array($has_duplicate->row) ? reset($has_duplicate->row) : null;
+	    $exists = is_array($exists->row) ? reset($exists->row) : null;
 
-        return $has_duplicate ? false : true;
+	    return $exists ? true : false;
     }
 
     /**
@@ -74,10 +74,11 @@ class ModelPaymentMTPayment extends Model
         );
     }
 
-    /**
-     * @param $transaction_id
-     * @param $amount
-     */
+	/**
+	 * @param $transaction_id
+	 * @param $amount
+	 * @return bool
+	 */
     public function closeOrder($transaction_id, $amount)
     {
         $order_id = $this->db->query(
