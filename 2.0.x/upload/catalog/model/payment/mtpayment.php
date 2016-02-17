@@ -157,7 +157,7 @@ class ModelPaymentMTPayment extends Model
 			    $comment = $this->language->get('text_instruction') . "\n\n";
 			    $comment .= $this->language->get('text_payment');
 
-			    $this->model_checkout_order->confirm(
+			    $this->model_checkout_order->addOrderHistory(
 				    $order_id,
 				    $this->config->get('mtpayment_order_pending_status_id'),
 				    $comment,
