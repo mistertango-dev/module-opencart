@@ -107,10 +107,10 @@ class ControllerPaymentMTPayment extends Controller
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('payment/mtpayment', 'token=' . $this->session->data['token'], 'SSL')
+            'href' => '/index.php?route=payment/mtpayment&token=' . $this->session->data['token']
         );
 
-        $data['action'] = $this->url->link('payment/mtpayment', 'token=' . $this->session->data['token'], 'SSL');
+        $data['action'] = '/index.php?route=payment/mtpayment&token=' . $this->session->data['token'];
 
         $data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
 

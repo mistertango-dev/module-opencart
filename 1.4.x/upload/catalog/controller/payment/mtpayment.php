@@ -20,8 +20,8 @@ class ControllerPaymentMTPayment extends Controller
         $this->data['button_confirm'] = $this->language->get('button_confirm');
 
         $this->data['mtpayment_username'] = $this->config->get('mtpayment_username');
-        $this->data['mtpayment_url_confirm'] = $this->url->https('payment/mtpayment/confirm');
-        $this->data['mtpayment_url_history'] = $this->url->https('payment/mtpayment/history');
+        $this->data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
+        $this->data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
 
         $this->load->model('checkout/order');
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -162,9 +162,9 @@ class ControllerPaymentMTPayment extends Controller
         $this->data['text_history'] = $this->language->get('text_history');
 
         $this->data['mtpayment_username'] = $this->config->get('mtpayment_username');
-        $this->data['mtpayment_url_confirm'] = $this->url->https('payment/mtpayment/confirm');
-        $this->data['mtpayment_url_history'] = $this->url->https('payment/mtpayment/history');
-        $this->data['mtpayment_url_histories'] = $this->url->https('payment/mtpayment/histories');
+	    $this->data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
+	    $this->data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
+        $this->data['mtpayment_url_histories'] = '/index.php?route=payment/mtpayment/histories';
 
         $this->document->title = $this->language->get('text_order');
 
@@ -196,7 +196,7 @@ class ControllerPaymentMTPayment extends Controller
 
         $this->data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_order'),
-            'href' => $this->url->https('payment/mtpayment/history', 'order_id=' . $order_id),
+            'href' => '/index.php?route=payment/mtpayment/history&order_id=' . $order_id,
             'separator' => $this->language->get('text_separator')
         );
 

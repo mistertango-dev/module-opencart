@@ -113,7 +113,7 @@ class ControllerPaymentMTPayment extends Controller
             'separator' => ' :: '
         );
 
-        $this->data['action'] = $this->url->link('payment/mtpayment', 'token=' . $this->session->data['token'], 'SSL');
+        $this->data['action'] = '/index.php?route=payment/mtpayment&token=' . $this->session->data['token'];
 
         $this->data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
 

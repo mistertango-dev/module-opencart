@@ -20,8 +20,8 @@ class ControllerPaymentMTPayment extends Controller
         $data['button_confirm'] = $this->language->get('button_confirm');
 
         $data['mtpayment_username'] = $this->config->get('mtpayment_username');
-        $data['mtpayment_url_confirm'] = $this->url->link('payment/mtpayment/confirm');
-        $data['mtpayment_url_history'] = $this->url->link('payment/mtpayment/history');
+	    $data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
+	    $data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
 
         $this->load->model('checkout/order');
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -179,9 +179,9 @@ class ControllerPaymentMTPayment extends Controller
         $data['text_history'] = $this->language->get('text_history');
 
         $data['mtpayment_username'] = $this->config->get('mtpayment_username');
-        $data['mtpayment_url_confirm'] = $this->url->link('payment/mtpayment/confirm');
-        $data['mtpayment_url_history'] = $this->url->link('payment/mtpayment/history');
-        $data['mtpayment_url_histories'] = $this->url->link('payment/mtpayment/histories');
+	    $data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
+	    $data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
+        $data['mtpayment_url_histories'] = '/index.php?route=payment/mtpayment/histories';
 
         $this->document->setTitle($this->language->get('text_order'));
 
@@ -210,7 +210,7 @@ class ControllerPaymentMTPayment extends Controller
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_order'),
-            'href' => $this->url->link('payment/mtpayment/history', 'order_id=' . $order_id, 'SSL')
+            'href' => '/index.php?route=payment/mtpayment/history&order_id=' . $order_id
         );
 
         $data['continue'] = $this->url->link('account/order', '', 'SSL');

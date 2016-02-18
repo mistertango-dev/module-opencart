@@ -104,7 +104,7 @@ class ControllerPaymentMTPayment extends Controller
             'separator' => ' :: '
         );
 
-        $this->data['action'] = $this->url->https('payment/mtpayment');
+        $this->data['action'] = '/index.php?route=payment/mtpayment';
 
         $this->data['cancel'] = $this->url->https('extension/payment');
 
