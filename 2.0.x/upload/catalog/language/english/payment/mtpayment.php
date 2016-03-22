@@ -1,7 +1,7 @@
 <?php
 
 // Text
-$_['text_title'] = 'MisterTango';
+$_['text_title'] = 'Via internet baking (Swedbank, SEB, DNB etc.)';
 $_['text_instruction'] = 'MisterTango Instructions';
 $_['text_description'] = 'Please choose MisterTango payment method and make payment.';
 $_['text_payment'] = 'Your order will not ship until we receive payment.';
