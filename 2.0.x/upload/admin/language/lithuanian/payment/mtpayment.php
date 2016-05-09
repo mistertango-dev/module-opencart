@@ -12,6 +12,7 @@ $_['text_mtpayment'] = '<a href="" target="_blank"><img src="view/image/payment/
 // Entry
 $_['entry_username'] = 'MisterTango vartotojo vardas';
 $_['entry_secret_key'] = 'MisterTango slaptas raktas';
+$_['entry_standard_redirect'] = 'Standartinis nukreipimas';
 $_['entry_total'] = 'Aktyvavimo suma';
 $_['entry_order_pending_status'] = 'Užsakymo apmokėjimo laukimo būsena';
 $_['entry_order_success_status'] = 'Užsakymo apmokėjimo gavimo būsena';

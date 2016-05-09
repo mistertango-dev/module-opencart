@@ -30,6 +30,13 @@
                                placeholder="<?php echo $entry_secret_key; ?>"/>
                     </td>
                 </tr>
+				<tr>
+				    <td><?php echo $entry_standard_redirect; ?></td>
+				    <td>
+				      <input type="checkbox" name="mtpayment_standard_redirect"
+				             value="1"<?php if ($mtpayment_standard_redirect): ?> checked="checked"<?php endif; ?> />
+				    </td>
+          		</tr>
                 <tr>
                     <td><?php echo $entry_order_pending_status; ?></td>
                     <td>

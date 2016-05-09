@@ -16,15 +16,7 @@
             <?php if ($history['status'] == $order_pending_status && $allow_different_payment): ?>
             <p class="jsAllowDifferentPayment">
                 <?php echo $text_email_message; ?>
-                <a href="#"
-                   class="mtpayment-button-pay"
-                   data-ws-id="<?php echo $websocket_id; ?>"
-                   data-language="<?php echo $language_code; ?>"
-                   data-customer="<?php echo $customer_email; ?>"
-                   data-order="<?php echo $order_id; ?>"
-                   data-amount="<?php echo $total; ?>"
-                   data-currency="<?php echo $currency_code; ?>"
-                   data-transaction="<?php echo $transaction_id; ?>">
+                <a href="#" class="mtpayment-button-pay" data-order="<?php echo $order_id; ?>">
                     <?php echo $text_click_here; ?>
                 </a>
             </p>

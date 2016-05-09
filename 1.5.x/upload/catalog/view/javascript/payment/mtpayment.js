@@ -13,6 +13,11 @@ MTPayment = {
     /**
      *
      */
+    isOfflinePayment: false,
+
+    /**
+     *
+     */
     success: false,
 
     /**
@@ -74,29 +79,42 @@ MTPayment = {
         $(document).on('click', '.mtpayment-button-pay', function (e) {
             e.preventDefault();
 
-            if (typeof $(this).data('ws-id') != 'undefined') {
-                mrTangoCollect.ws_id = $(this).data('ws-id');
-            }
+            $this = $(this);
+            var order = typeof $this.data('order') == 'undefined'?null:$this.data('order');
 
-            MTPayment.order = null;
+            $.ajax({
+                type: 'GET',
+                async: true,
+                dataType: "json",
+                url: MTPAYMENT_URL_DATA,
+                headers: {"cache-control": "no-cache"},
+                cache: false,
+                data: {
+                    order: order
+                },
+                success: function (data) {
+                    if (data.success) {
+                        MTPayment.order = order;
+                        MTPayment.transaction = data.transaction;
+                        MTPayment.customer = data.customer;
+                        MTPayment.amount = data.amount;
+                        MTPayment.currency = data.currency;
+                        MTPayment.language = data.language;
 
-            if (typeof $(this).data('order') != 'undefined') {
-                MTPayment.order = $(this).data('order');
-            }
+                        if (data.websocket) {
+                            mrTangoCollect.ws_id = data.websocket;
+                        }
 
-            MTPayment.transaction = $(this).data('transaction');
-            MTPayment.customer = $(this).data('customer');
-            MTPayment.amount = $(this).data('amount');
-            MTPayment.currency = $(this).data('currency');
-            MTPayment.language = $(this).data('language');
+                        mrTangoCollect.set.payer(MTPayment.customer);
+                        mrTangoCollect.set.amount(MTPayment.amount);
+                        mrTangoCollect.set.currency(MTPayment.currency);
+                        mrTangoCollect.set.description(MTPayment.transaction);
+                        mrTangoCollect.set.lang(MTPayment.language);
 
-            mrTangoCollect.set.payer(MTPayment.customer);
-            mrTangoCollect.set.amount(MTPayment.amount);
-            mrTangoCollect.set.currency(MTPayment.currency);
-            mrTangoCollect.set.description(MTPayment.transaction);
-            mrTangoCollect.set.lang(MTPayment.language);
-
-            mrTangoCollect.submit();
+                        mrTangoCollect.submit();
+                    }
+                }
+            });
         });
     },
 
@@ -113,6 +131,7 @@ MTPayment = {
      */
     onOfflinePayment: function (response) {
         mrTangoCollect.onSuccess = function () {};
+        MTPayment.isOfflinePayment = true;
         MTPayment.onSuccess(response);
     },
 
@@ -132,7 +151,8 @@ MTPayment = {
                 order: MTPayment.order ? MTPayment.order : null,
                 transaction: MTPayment.transaction,
                 websocket: mrTangoCollect.ws_id,
-                amount: MTPayment.amount
+                amount: MTPayment.amount,
+                offline: MTPayment.isOfflinePayment
             },
             success: function (data) {
                 if (data.success) {
@@ -145,6 +165,8 @@ MTPayment = {
                         MTPayment.afterSuccess();
                     }
                 }
+
+                MTPayment.isOfflinePayment = false;
             }
         });
     },
@@ -164,8 +186,14 @@ MTPayment = {
      *
      */
     afterSuccess: function () {
-        var operator = MTPAYMENT_URL_HISTORY.indexOf('?') === -1 ? '?' : '&';
-        window.location.href = MTPAYMENT_URL_HISTORY + operator + 'order=' + MTPayment.order;
+        var url = MTPAYMENT_URL_CONTINUE;
+
+        if (!MTPAYMENT_STANDARD_REDIRECT && !MTPayment.isOfflinePayment) {
+            var operator = MTPAYMENT_URL_HISTORY.indexOf('?') === -1 ? '?' : '&';
+            url = MTPAYMENT_URL_HISTORY + operator + 'order=' + MTPayment.order;
+        }
+
+        window.location.href = url;
     }
 };
 

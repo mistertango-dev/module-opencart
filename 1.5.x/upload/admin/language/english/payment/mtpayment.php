@@ -12,6 +12,7 @@ $_['text_mtpayment'] = '<a href="" target="_blank"><img src="view/image/payment/
 // Entry
 $_['entry_username'] = 'MisterTango username';
 $_['entry_secret_key'] = 'MisterTango secret key';
+$_['entry_standard_redirect'] = 'Standard redirect';
 $_['entry_total'] = 'Total';
 $_['entry_order_pending_status'] = 'Order pending status';
 $_['entry_order_success_status'] = 'Order success status';

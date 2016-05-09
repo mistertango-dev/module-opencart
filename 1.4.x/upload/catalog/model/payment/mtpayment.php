@@ -115,7 +115,7 @@ class ModelPaymentMTPayment extends Model
 
 	    $order_total = trim($this->currency->format($order_info['total'], '', '', false));
 
-        if (bcdiv($order_total, 1, 2) != bcdiv($amount, 1, 2)) {
+	    if (bcdiv($order_total, 1, 2) != bcdiv($amount, 1, 2)) {
             $order_status_id = $this->config->get('mtpayment_order_error_status_id');
         }
 
@@ -149,7 +149,7 @@ class ModelPaymentMTPayment extends Model
 		    $this->load->model('checkout/order');
 
 		    $order_id = $transaction[0];
-		    $order_histories = $this->model_account_order->getOrderHistories($order_id);
+		    $order_histories = $this->model_account_order->getOrderHistorys($order_id);
 
 		    if (empty($order_histories)) {
 			    $comment = $this->language->get('text_instruction') . "\n\n";

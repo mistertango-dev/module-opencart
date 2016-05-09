@@ -14,6 +14,15 @@ class ControllerPaymentMTPayment extends Controller
     /**
      *
      */
+    public function install()
+    {
+        $this->load->model('payment/mtpayment');
+        $this->model_payment_mtpayment->install();
+    }
+
+    /**
+     *
+     */
     public function uninstall()
     {
         $this->load->model('payment/mtpayment');
@@ -51,6 +60,8 @@ class ControllerPaymentMTPayment extends Controller
 
         $this->data['entry_username'] = $this->language->get('entry_username');
         $this->data['entry_secret_key'] = $this->language->get('entry_secret_key');
+        $this->data['entry_standard_redirect'] = $this->language->get('entry_standard_redirect');
+        $this->data['entry_total'] = $this->language->get('entry_total');
         $this->data['entry_order_pending_status'] = $this->language->get('entry_order_pending_status');
         $this->data['entry_order_success_status'] = $this->language->get('entry_order_success_status');
         $this->data['entry_order_error_status'] = $this->language->get('entry_order_error_status');
@@ -120,6 +131,18 @@ class ControllerPaymentMTPayment extends Controller
             $this->data['mtpayment_secret_key'] = $this->request->post['mtpayment_secret_key'];
         } else {
             $this->data['mtpayment_secret_key'] = $this->config->get('mtpayment_secret_key');
+        }
+
+        if (isset($this->request->post['mtpayment_standard_redirect'])) {
+            $this->data['mtpayment_standard_redirect'] = $this->request->post['mtpayment_standard_redirect'];
+        } else {
+            $this->data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
+        }
+
+        if (isset($this->request->post['mtpayment_total'])) {
+            $this->data['mtpayment_total'] = $this->request->post['mtpayment_total'];
+        } else {
+            $this->data['mtpayment_total'] = $this->config->get('mtpayment_total');
         }
 
         if (isset($this->request->post['mtpayment_order_pending_status_id'])) {
@@ -198,14 +221,5 @@ class ControllerPaymentMTPayment extends Controller
         } else {
             return false;
         }
-    }
-
-    /**
-     *
-     */
-    public function install()
-    {
-        $this->load->model('payment/mtpayment');
-        $this->model_payment_mtpayment->install();
     }
 }

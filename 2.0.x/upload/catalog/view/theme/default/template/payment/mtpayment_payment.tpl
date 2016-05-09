@@ -5,20 +5,16 @@
 </div>
 <div class="buttons">
     <div class="pull-right">
-        <button type="button"
-                id="button-confirm"
-                class="btn btn-primary mtpayment-button-pay"
-                data-language="<?php echo $language_code; ?>"
-                data-customer="<?php echo $customer_email; ?>"
-                data-amount="<?php echo $total; ?>"
-                data-currency="<?php echo $currency_code; ?>"
-                data-transaction="<?php echo $transaction_id; ?>">
+        <button type="button" id="button-confirm" class="btn btn-primary mtpayment-button-pay">
             <?php echo $button_confirm; ?>
         </button>
     </div>
 </div>
 <script type="text/javascript">
     var MTPAYMENT_USERNAME = "<?php echo $mtpayment_username; ?>";
+    var MTPAYMENT_STANDARD_REDIRECT = "<?php echo $mtpayment_standard_redirect; ?>";
+    var MTPAYMENT_URL_CONTINUE = "<?php echo $continue; ?>";
+    var MTPAYMENT_URL_DATA = "<?php echo $mtpayment_url_data; ?>";
     var MTPAYMENT_URL_CONFIRM = "<?php echo $mtpayment_url_confirm; ?>";
     var MTPAYMENT_URL_HISTORY = "<?php echo $mtpayment_url_history; ?>";
     var MTPAYMENT_URL_SCRIPT = "https://mistertango.com/resources/scripts/mt.collect.js?v=<?php echo time(); ?>";

@@ -5,6 +5,7 @@
  */
 class ModelPaymentMTPayment extends Model
 {
+
     /**
      * @param $address
      * @param $total

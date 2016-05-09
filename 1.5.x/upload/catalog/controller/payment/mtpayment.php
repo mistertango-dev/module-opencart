@@ -20,23 +20,10 @@ class ControllerPaymentMTPayment extends Controller
         $this->data['button_confirm'] = $this->language->get('button_confirm');
 
         $this->data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $this->data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
+	    $this->data['mtpayment_url_data'] = '/index.php?route=payment/mtpayment/data';
 	    $this->data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
 	    $this->data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
-
-        $this->load->model('checkout/order');
-        $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-
-        $customer_email = $this->customer->getEmail();
-
-        if (isset($this->session->data['guest'])) {
-            $customer_email = $this->session->data['guest']['email'];
-        }
-
-        $this->data['language_code'] = $this->language->get('code');
-        $this->data['customer_email'] = $customer_email;
-        $this->data['total'] = trim($this->currency->format($order_info['total'], '', '', false));
-        $this->data['currency_code'] = $this->currency->getCode();
-        $this->data['transaction_id'] = $this->session->data['order_id'] . '_' . time();
 
         $this->data['continue'] = $this->url->link('checkout/success');
 
@@ -47,6 +34,68 @@ class ControllerPaymentMTPayment extends Controller
         }
 
         $this->response->setOutput($this->render());
+    }
+
+    /**
+     *
+     */
+    public function data()
+    {
+        $this->response->addHeader('Content-Type: application/json');
+
+        $customer_email = $this->customer->getEmail();
+
+        if (isset($this->session->data['guest'])) {
+            $customer_email = $this->session->data['guest']['email'];
+        }
+
+        if (empty($customer_email)) {
+            $this->response->setOutput(json_encode(array(
+                'success' => false,
+                'error' => 'Unknown customer',
+            )));
+
+            return;
+        }
+
+        $order_id = null;
+        if (!empty($this->request->get['order']) && $this->request->get['order'] != 'null') {
+            $order_id = $this->request->get['order'];
+        } elseif (!empty($this->session->data['order_id'])) {
+            $order_id = $this->session->data['order_id'];
+        }
+
+        if (empty($order_id)) {
+            $this->response->setOutput(json_encode(array(
+                'success' => false,
+                'error' => 'Order is not present',
+            )));
+
+            return;
+        }
+
+        $this->load->model('checkout/order');
+        $order_info = $this->model_checkout_order->getOrder($order_id);
+
+        $websocket_query = $this->db->query(
+            "SELECT * FROM " . DB_PREFIX . "mttransactions WHERE `order` = '" . (int)$order_info['order_id'] . "'"
+        );
+
+        if ($websocket_query->num_rows) {
+            $websocket_id = $websocket_query->row['websocket'];
+        } else {
+            $websocket_id = null;
+        }
+
+        $this->response->setOutput(json_encode(array(
+            'success' => true,
+            'websocket' => $websocket_id,
+            'transaction' => $this->session->data['order_id'] . '_' . time(),
+            'customer' => $customer_email,
+            'amount' => trim($this->currency->format($order_info['total'], '', '', false)),
+            'currency' => $this->currency->getCode(),
+            'language' => $this->language->get('code'),
+        )));
     }
 
     /**
@@ -84,6 +133,7 @@ class ControllerPaymentMTPayment extends Controller
         $transaction = isset($this->request->get['transaction']) ? $this->request->get['transaction'] : null;
         $websocket = isset($this->request->get['websocket']) ? $this->request->get['websocket'] : null;
         $amount = isset($this->request->get['amount']) ? $this->request->get['amount'] : null;
+        $offline = isset($this->request->get['offline']) ? $this->request->get['offline'] : false;
 
         if (empty($transaction) || empty($websocket) || empty($amount)) {
             $this->response->setOutput(json_encode(array(
@@ -114,8 +164,12 @@ class ControllerPaymentMTPayment extends Controller
                 'order' => $order_info['order_id']
             )));
 
-            // Clear cart related stuff
-            if (isset($this->session->data['order_id'])) {
+            // Clear cart related stuff if needed
+            if (
+                !$this->config->get('mtpayment_standard_redirect')
+                && !$offline
+                && isset($this->session->data['order_id'])
+            ) {
                 $this->cart->clear();
 
                 unset($this->session->data['shipping_method']);
@@ -160,9 +214,10 @@ class ControllerPaymentMTPayment extends Controller
         $this->data['text_history'] = $this->language->get('text_history');
 
         $this->data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $this->data['mtpayment_url_data'] = '/index.php?route=payment/mtpayment/data';
 	    $this->data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
 	    $this->data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
-	    $this->data['mtpayment_url_histories'] = '/index.php?route=payment/mtpayment/histories';
+        $this->data['mtpayment_url_histories'] = '/index.php?route=payment/mtpayment/histories';
 
         $this->document->setTitle($this->language->get('text_order'));
 
@@ -237,32 +292,7 @@ class ControllerPaymentMTPayment extends Controller
         $order_id = isset($this->request->get['order']) ? $this->request->get['order'] : null;
 
         if (isset($order_id)) {
-            $this->load->model('checkout/order');
             $this->load->model('account/order');
-
-            $order_info = $this->model_checkout_order->getOrder($order_id);
-
-            $customer_email = $this->customer->getEmail();
-
-            if (isset($this->session->data['guest'])) {
-                $customer_email = $this->session->data['guest']['email'];
-            }
-
-            $websocket_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "mttransactions WHERE `order` = '" . (int)$order_info['order_id'] . "'");
-
-            if ($websocket_query->num_rows) {
-                $websocket_id = $websocket_query->row['websocket'];
-            } else {
-                $websocket_id = null;
-            }
-
-            $this->data['order_id'] = $order_info['order_id'];
-            $this->data['language_code'] = $this->language->get('code');
-            $this->data['customer_email'] = $customer_email;
-            $this->data['total'] = trim($this->currency->format($order_info['total'], '', '', false));
-            $this->data['currency_code'] = $this->currency->getCode();
-            $this->data['transaction_id'] = $order_info['order_id'] . '_' . time();
-            $this->data['websocket_id'] = $websocket_id;
 
             $this->data['text_email_message'] = $this->language->get('text_email_message');
             $this->data['text_click_here'] = $this->language->get('text_click_here');
@@ -281,6 +311,7 @@ class ControllerPaymentMTPayment extends Controller
                 $order_pending_status = '';
             }
 
+            $this->data['order_id'] = $order_id;
             $this->data['order_pending_status'] = $order_pending_status;
 
             $results = $this->model_account_order->getOrderHistories($order_id);

@@ -42,7 +42,7 @@ class ControllerPaymentMTPayment extends Controller
         $this->load->model('payment/mtpayment');
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-            $this->model_setting_setting->editSetting('bank_transfer', $this->request->post);
+            $this->model_setting_setting->editSetting('mtpayment', $this->request->post);
 
             $this->session->data['success'] = $this->language->get('text_success');
 
@@ -58,6 +58,7 @@ class ControllerPaymentMTPayment extends Controller
 
         $this->data['entry_username'] = $this->language->get('entry_username');
         $this->data['entry_secret_key'] = $this->language->get('entry_secret_key');
+        $this->data['entry_standard_redirect'] = $this->language->get('entry_standard_redirect');
         $this->data['entry_total'] = $this->language->get('entry_total');
         $this->data['entry_order_pending_status'] = $this->language->get('entry_order_pending_status');
         $this->data['entry_order_success_status'] = $this->language->get('entry_order_success_status');
@@ -109,7 +110,7 @@ class ControllerPaymentMTPayment extends Controller
 
         $this->data['breadcrumbs'][] = array(
             'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('payment/bank_transfer', 'token=' . $this->session->data['token'], 'SSL'),
+            'href' => $this->url->link('payment/mtpayment', 'token=' . $this->session->data['token'], 'SSL'),
             'separator' => ' :: '
         );
 
@@ -129,6 +130,12 @@ class ControllerPaymentMTPayment extends Controller
             $this->data['mtpayment_secret_key'] = $this->request->post['mtpayment_secret_key'];
         } else {
             $this->data['mtpayment_secret_key'] = $this->config->get('mtpayment_secret_key');
+        }
+
+        if (isset($this->request->post['mtpayment_standard_redirect'])) {
+            $this->data['mtpayment_standard_redirect'] = $this->request->post['mtpayment_standard_redirect'];
+        } else {
+            $this->data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
         }
 
         if (isset($this->request->post['mtpayment_total'])) {

@@ -20,11 +20,22 @@ class ControllerPaymentMTPayment extends Controller
         $data['button_confirm'] = $this->language->get('button_confirm');
 
         $data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
+	    $data['mtpayment_url_data'] = '/index.php?route=payment/mtpayment/data';
 	    $data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
 	    $data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
 
-        $this->load->model('checkout/order');
-        $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+        $data['continue'] = $this->url->link('checkout/success');
+
+        return $this->load->view('payment/mtpayment_payment', $data);
+    }
+
+    /**
+     *
+     */
+    public function data()
+    {
+        $this->response->addHeader('Content-Type: application/json');
 
         $customer_email = $this->customer->getEmail();
 
@@ -32,19 +43,60 @@ class ControllerPaymentMTPayment extends Controller
             $customer_email = $this->session->data['guest']['email'];
         }
 
-        $data['language_code'] = $this->language->get('code');
-        $data['customer_email'] = $customer_email;
-        $data['total'] = trim($this->currency->format($order_info['total'], '', '', false));
-        $data['currency_code'] = $this->currency->getCode();
-        $data['transaction_id'] = $this->session->data['order_id'] . '_' . time();
+        if (empty($customer_email)) {
+            $this->response->setOutput(json_encode(array(
+                'success' => false,
+                'error' => 'Unknown customer',
+            )));
 
-        $data['continue'] = $this->url->link('checkout/success');
-
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/mtpayment_payment.tpl')) {
-            return $this->load->view($this->config->get('config_template') . '/template/payment/mtpayment_payment.tpl', $data);
-        } else {
-            return $this->load->view('default/template/payment/mtpayment_payment.tpl', $data);
+            return;
         }
+
+        $order_id = null;
+        if (!empty($this->request->get['order']) && $this->request->get['order'] != 'null') {
+            $order_id = $this->request->get['order'];
+        } elseif (!empty($this->session->data['order_id'])) {
+            $order_id = $this->session->data['order_id'];
+        }
+
+        if (empty($order_id)) {
+            $this->response->setOutput(json_encode(array(
+                'success' => false,
+                'error' => 'Order is not present',
+            )));
+
+            return;
+        }
+
+        $this->load->model('checkout/order');
+        $order_info = $this->model_checkout_order->getOrder($order_id);
+
+        $websocket_query = $this->db->query(
+            "SELECT * FROM " . DB_PREFIX . "mttransactions WHERE `order` = '" . (int)$order_info['order_id'] . "'"
+        );
+
+        if ($websocket_query->num_rows) {
+            $websocket_id = $websocket_query->row['websocket'];
+        } else {
+            $websocket_id = null;
+        }
+
+        $this->load->library('currency');
+        $currency = $this->currency->getCode();
+        $this->response->setOutput(json_encode(array(
+            'success' => true,
+            'websocket' => $websocket_id,
+            'transaction' => $this->session->data['order_id'] . '_' . time(),
+            'customer' => $customer_email,
+            'amount' => trim($this->currency->format(
+                $order_info['total'],
+                $currency,
+                $this->currency->getValue(),
+                false)
+            ),
+            'currency' => $currency,
+            'language' => $this->language->get('code'),
+        )));
     }
 
     /**
@@ -82,6 +134,7 @@ class ControllerPaymentMTPayment extends Controller
         $transaction = isset($this->request->get['transaction']) ? $this->request->get['transaction'] : null;
         $websocket = isset($this->request->get['websocket']) ? $this->request->get['websocket'] : null;
         $amount = isset($this->request->get['amount']) ? $this->request->get['amount'] : null;
+        $offline = isset($this->request->get['offline']) ? $this->request->get['offline'] : false;
 
         if (empty($transaction) || empty($websocket) || empty($amount)) {
             $this->response->setOutput(json_encode(array(
@@ -112,8 +165,12 @@ class ControllerPaymentMTPayment extends Controller
                 'order' => $order_info['order_id']
             )));
 
-            // Clear cart related stuff
-            if (isset($this->session->data['order_id'])) {
+            // Clear cart related stuff if needed
+            if (
+                !$this->config->get('mtpayment_standard_redirect')
+                && !$offline
+                && isset($this->session->data['order_id'])
+            ) {
                 $this->cart->clear();
 
                 // Add to activity log
@@ -179,6 +236,7 @@ class ControllerPaymentMTPayment extends Controller
         $data['text_history'] = $this->language->get('text_history');
 
         $data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $data['mtpayment_url_data'] = '/index.php?route=payment/mtpayment/data';
 	    $data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
 	    $data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
         $data['mtpayment_url_histories'] = '/index.php?route=payment/mtpayment/histories';
@@ -222,11 +280,7 @@ class ControllerPaymentMTPayment extends Controller
         $data['footer'] = $this->load->controller('common/footer');
         $data['header'] = $this->load->controller('common/header');
 
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/mtpayment_history.tpl')) {
-            $this->response->setOutput($this->load->view($this->config->get('config_template') . '/template/payment/mtpayment_history.tpl', $data));
-        } else {
-            $this->response->setOutput($this->load->view('default/template/payment/mtpayment_history.tpl', $data));
-        }
+        $this->response->setOutput($this->load->view('payment/mtpayment_history', $data));
     }
 
     /**
@@ -248,32 +302,7 @@ class ControllerPaymentMTPayment extends Controller
         $order_id = isset($this->request->get['order']) ? $this->request->get['order'] : null;
 
         if (isset($order_id)) {
-            $this->load->model('checkout/order');
             $this->load->model('account/order');
-
-            $order_info = $this->model_checkout_order->getOrder($order_id);
-
-            $customer_email = $this->customer->getEmail();
-
-            if (isset($this->session->data['guest'])) {
-                $customer_email = $this->session->data['guest']['email'];
-            }
-
-            $websocket_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "mttransactions WHERE `order` = '" . (int)$order_info['order_id'] . "'");
-
-            if ($websocket_query->num_rows) {
-                $websocket_id = $websocket_query->row['websocket'];
-            } else {
-                $websocket_id = null;
-            }
-
-            $data['order_id'] = $order_info['order_id'];
-            $data['language_code'] = $this->language->get('code');
-            $data['customer_email'] = $customer_email;
-            $data['total'] = trim($this->currency->format($order_info['total'], '', '', false));
-            $data['currency_code'] = $this->currency->getCode();
-            $data['transaction_id'] = $order_info['order_id'] . '_' . time();
-            $data['websocket_id'] = $websocket_id;
 
             $data['text_email_message'] = $this->language->get('text_email_message');
             $data['text_click_here'] = $this->language->get('text_click_here');
@@ -292,6 +321,7 @@ class ControllerPaymentMTPayment extends Controller
                 $order_pending_status = '';
             }
 
+            $data['order_id'] = $order_id;
             $data['order_pending_status'] = $order_pending_status;
 
             $results = $this->model_account_order->getOrderHistories($order_id);
@@ -312,11 +342,7 @@ class ControllerPaymentMTPayment extends Controller
 
             $data['allow_different_payment'] = $allow_different_payment;
 
-            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/mtpayment_histories.tpl')) {
-                $html = $this->load->view($this->config->get('config_template') . '/template/payment/mtpayment_histories.tpl', $data);
-            } else {
-                $html = $this->load->view('default/template/payment/mtpayment_histories.tpl', $data);
-            }
+            $html = $this->load->view('payment/mtpayment_histories', $data);
         }
 
         if ($json) {
@@ -331,9 +357,9 @@ class ControllerPaymentMTPayment extends Controller
         return $html;
     }
 
-	/**
-	 *
-	 */
+    /**
+     *
+     */
     public function callback()
     {
         $this->load->model('payment/mtpayment');

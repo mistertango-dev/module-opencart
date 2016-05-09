@@ -58,6 +58,7 @@ class ControllerPaymentMTPayment extends Controller
 
         $data['entry_username'] = $this->language->get('entry_username');
         $data['entry_secret_key'] = $this->language->get('entry_secret_key');
+        $data['entry_standard_redirect'] = $this->language->get('entry_standard_redirect');
         $data['entry_total'] = $this->language->get('entry_total');
         $data['entry_order_pending_status'] = $this->language->get('entry_order_pending_status');
         $data['entry_order_success_status'] = $this->language->get('entry_order_success_status');
@@ -126,6 +127,12 @@ class ControllerPaymentMTPayment extends Controller
             $data['mtpayment_secret_key'] = $this->request->post['mtpayment_secret_key'];
         } else {
             $data['mtpayment_secret_key'] = $this->config->get('mtpayment_secret_key');
+        }
+
+        if (isset($this->request->post['mtpayment_standard_redirect'])) {
+            $data['mtpayment_standard_redirect'] = $this->request->post['mtpayment_standard_redirect'];
+        } else {
+            $data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
         }
 
         if (isset($this->request->post['mtpayment_total'])) {
