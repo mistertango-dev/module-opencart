@@ -281,7 +281,10 @@ class ControllerPaymentMTPayment extends Controller
             'href' => '/index.php?route=payment/mtpayment/history&order_id=' . $order_id
         );
 
-        $data['continue'] = $this->url->link('account/order', '', 'SSL');
+        $data['continue'] = '/index.php?route=payment/mtpayment/history';
+        if ($this->config->get('mtpayment_standard_redirect') && isset($this->session->data['order_id'])) {
+            $data['continue'] = $this->url->link('checkout/success');
+        }
 
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');

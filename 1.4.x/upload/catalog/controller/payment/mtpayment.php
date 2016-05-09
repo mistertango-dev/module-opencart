@@ -256,7 +256,10 @@ class ControllerPaymentMTPayment extends Controller
             'separator' => $this->language->get('text_separator')
         );
 
-        $this->data['continue'] = $this->url->https('account/order');
+        $this->data['continue'] = '/index.php?route=payment/mtpayment/history';
+        if ($this->config->get('mtpayment_standard_redirect') && isset($this->session->data['order_id'])) {
+            $this->data['continue'] = $this->url->https('checkout/success');
+        }
 
         $this->children = array(
             'common/column_left',

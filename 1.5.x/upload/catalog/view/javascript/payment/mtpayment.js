@@ -76,7 +76,7 @@ MTPayment = {
      *
      */
     initButtonPay: function () {
-        $(document).on('click', '.mtpayment-button-pay', function (e) {
+        $('.mtpayment-button-pay').click(function (e) {
             e.preventDefault();
 
             $this = $(this);
