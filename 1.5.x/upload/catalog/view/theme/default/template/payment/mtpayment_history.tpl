@@ -14,6 +14,7 @@
 <script type="text/javascript">
     var MTPAYMENT_ORDER_ID = "<?php echo $order_id; ?>";
     var MTPAYMENT_USERNAME = "<?php echo $mtpayment_username; ?>";
+    var MTPAYMENT_STANDARD_REDIRECT = "<?php echo $mtpayment_standard_redirect; ?>";
     var MTPAYMENT_URL_CONTINUE = "<?php echo $continue; ?>";
     var MTPAYMENT_URL_DATA = "<?php echo $mtpayment_url_data; ?>";
     var MTPAYMENT_URL_CONFIRM = "<?php echo $mtpayment_url_confirm; ?>";

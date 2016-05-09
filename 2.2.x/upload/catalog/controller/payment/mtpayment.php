@@ -236,6 +236,7 @@ class ControllerPaymentMTPayment extends Controller
         $data['text_history'] = $this->language->get('text_history');
 
         $data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
         $data['mtpayment_url_data'] = '/index.php?route=payment/mtpayment/data';
 	    $data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
 	    $data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
