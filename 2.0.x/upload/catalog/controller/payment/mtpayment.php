@@ -27,7 +27,17 @@ class ControllerPaymentMTPayment extends Controller
 
         $data['continue'] = $this->url->link('checkout/success');
 
-        return $this->load->view('payment/mtpayment_payment', $data);
+        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/mtpayment_payment.tpl')) {
+            return $this->load->view(
+                $this->config->get('config_template') . '/template/payment/mtpayment_payment.tpl',
+                $data
+            );
+        } else {
+            return $this->load->view(
+                'default/template/payment/mtpayment_payment.tpl',
+                $data
+            );
+        }
     }
 
     /**
@@ -236,6 +246,7 @@ class ControllerPaymentMTPayment extends Controller
         $data['text_history'] = $this->language->get('text_history');
 
         $data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
         $data['mtpayment_url_data'] = '/index.php?route=payment/mtpayment/data';
 	    $data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
 	    $data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
@@ -271,7 +282,10 @@ class ControllerPaymentMTPayment extends Controller
             'href' => '/index.php?route=payment/mtpayment/history&order_id=' . $order_id
         );
 
-        $data['continue'] = $this->url->link('account/order', '', 'SSL');
+        $data['continue'] = '/index.php?route=payment/mtpayment/history';
+        if ($this->config->get('mtpayment_standard_redirect') && isset($this->session->data['order_id'])) {
+            $data['continue'] = $this->url->link('checkout/success');
+        }
 
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');
@@ -280,7 +294,17 @@ class ControllerPaymentMTPayment extends Controller
         $data['footer'] = $this->load->controller('common/footer');
         $data['header'] = $this->load->controller('common/header');
 
-        $this->response->setOutput($this->load->view('payment/mtpayment_history', $data));
+        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/mtpayment_history.tpl')) {
+            $this->response->setOutput($this->load->view(
+                $this->config->get('config_template') . '/template/payment/mtpayment_history.tpl',
+                $data
+            ));
+        } else {
+            $this->response->setOutput($this->load->view(
+                'default/template/payment/mtpayment_history.tpl',
+                $data
+            ));
+        }
     }
 
     /**
@@ -342,7 +366,17 @@ class ControllerPaymentMTPayment extends Controller
 
             $data['allow_different_payment'] = $allow_different_payment;
 
-            $html = $this->load->view('payment/mtpayment_histories', $data);
+            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/mtpayment_histories.tpl')) {
+                $html = $this->load->view(
+                    $this->config->get('config_template') . '/template/payment/mtpayment_histories.tpl',
+                    $data
+                );
+            } else {
+                $html = $this->load->view(
+                    'default/template/payment/mtpayment_histories.tpl',
+                    $data
+                );
+            }
         }
 
         if ($json) {

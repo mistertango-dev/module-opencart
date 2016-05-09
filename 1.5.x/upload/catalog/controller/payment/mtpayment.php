@@ -152,7 +152,8 @@ class ControllerPaymentMTPayment extends Controller
             $order_info = $this->model_checkout_order->getOrder($order_id);
         }
 
-        if ($order_info['payment_code'] == 'mtpayment') {
+        $this->load->language('payment/mtpayment');
+        if ($order_info['payment_method'] == $this->language->get('text_title')) {
             $this->load->language('payment/mtpayment');
 
             $this->load->model('payment/mtpayment');
@@ -214,6 +215,7 @@ class ControllerPaymentMTPayment extends Controller
         $this->data['text_history'] = $this->language->get('text_history');
 
         $this->data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $this->data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
         $this->data['mtpayment_url_data'] = '/index.php?route=payment/mtpayment/data';
 	    $this->data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
 	    $this->data['mtpayment_url_history'] = '/index.php?route=payment/mtpayment/history';
@@ -253,7 +255,10 @@ class ControllerPaymentMTPayment extends Controller
             'separator' => $this->language->get('text_separator')
         );
 
-        $this->data['continue'] = $this->url->link('account/order', '', 'SSL');
+        $this->data['continue'] = '/index.php?route=payment/mtpayment/history';
+        if ($this->config->get('mtpayment_standard_redirect') && isset($this->session->data['order_id'])) {
+            $this->data['continue'] = $this->url->link('checkout/success');
+        }
 
         $this->children = array(
             'common/column_left',
