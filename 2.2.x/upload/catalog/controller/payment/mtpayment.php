@@ -27,17 +27,7 @@ class ControllerPaymentMTPayment extends Controller
 
         $data['continue'] = $this->url->link('checkout/success');
 
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/mtpayment_payment.tpl')) {
-            return $this->load->view(
-                $this->config->get('config_template') . '/template/payment/mtpayment_payment.tpl',
-                $data
-            );
-        } else {
-            return $this->load->view(
-                'default/template/payment/mtpayment_payment.tpl',
-                $data
-            );
-        }
+        return $this->load->view('payment/mtpayment_payment', $data);
     }
 
     /**
@@ -290,17 +280,7 @@ class ControllerPaymentMTPayment extends Controller
         $data['footer'] = $this->load->controller('common/footer');
         $data['header'] = $this->load->controller('common/header');
 
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/mtpayment_history.tpl')) {
-            $this->response->setOutput($this->load->view(
-                $this->config->get('config_template') . '/template/payment/mtpayment_history.tpl',
-                $data
-            ));
-        } else {
-            $this->response->setOutput($this->load->view(
-                'default/template/payment/mtpayment_history.tpl',
-                $data
-            ));
-        }
+        $this->response->setOutput($this->load->view('payment/mtpayment_history', $data));
     }
 
     /**
@@ -362,17 +342,7 @@ class ControllerPaymentMTPayment extends Controller
 
             $data['allow_different_payment'] = $allow_different_payment;
 
-            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/mtpayment_histories.tpl')) {
-                $html = $this->load->view(
-                    $this->config->get('config_template') . '/template/payment/mtpayment_histories.tpl',
-                    $data
-                );
-            } else {
-                $html = $this->load->view(
-                    'default/template/payment/mtpayment_histories.tpl',
-                    $data
-                );
-            }
+            $html = $this->load->view('payment/mtpayment_histories', $data);
         }
 
         if ($json) {
