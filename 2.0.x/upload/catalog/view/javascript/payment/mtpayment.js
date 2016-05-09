@@ -188,7 +188,7 @@ MTPayment = {
     afterSuccess: function () {
         var url = MTPAYMENT_URL_CONTINUE;
 
-        if (!MTPAYMENT_STANDARD_REDIRECT && !MTPayment.isOfflinePayment) {
+        if (!MTPAYMENT_STANDARD_REDIRECT || MTPayment.isOfflinePayment) {
             var operator = MTPAYMENT_URL_HISTORY.indexOf('?') === -1 ? '?' : '&';
             url = MTPAYMENT_URL_HISTORY + operator + 'order=' + MTPayment.order;
         }
