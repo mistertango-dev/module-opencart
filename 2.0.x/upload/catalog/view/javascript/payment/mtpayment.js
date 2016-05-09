@@ -112,6 +112,8 @@ MTPayment = {
                         mrTangoCollect.set.lang(MTPayment.language);
 
                         mrTangoCollect.submit();
+
+                        MTPayment.isOfflinePayment = false;
                     }
                 }
             });
@@ -165,8 +167,6 @@ MTPayment = {
                         MTPayment.afterSuccess();
                     }
                 }
-
-                MTPayment.isOfflinePayment = false;
             }
         });
     },
