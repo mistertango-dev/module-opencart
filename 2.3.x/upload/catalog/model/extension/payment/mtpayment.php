@@ -117,7 +117,7 @@ class ModelExtensionPaymentMTPayment extends Model
 
         $order_status_id = $this->config->get('mtpayment_order_success_status_id');
 
-	    $order_total = trim($this->currency->format($order_info['total'], '', '', false));
+	    $order_total = trim($order_info['total']);
 
 	    if (bcdiv($order_total, 1, 2) != bcdiv($amount, 1, 2)) {
             $order_status_id = $this->config->get('mtpayment_order_error_status_id');
