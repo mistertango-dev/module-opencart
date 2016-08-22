@@ -376,13 +376,13 @@ class ControllerExtensionPaymentMTPayment extends Controller
             $data->custom = isset($data->custom) ? json_decode($data->custom) : null;
 
             if (!isset($data->custom) && !isset($data->custom->description)) {
-                die();
+                die('Bad custom data and description');
             }
 
             $transaction = explode('_', $data->custom->description);
 
             if (count($transaction) != 2) {
-                die();
+                die('Invalid transaction ID');
             }
 
             if ($this->model_extension_payment_mtpayment->existsCallback($data->callback_uuid)) {
@@ -397,7 +397,7 @@ class ControllerExtensionPaymentMTPayment extends Controller
                     $data->custom->data->amount
                 );
             } catch (Exception $e) {
-                die();
+                die('System was unable to close order');
             }
 
             if ($success) {
@@ -406,6 +406,6 @@ class ControllerExtensionPaymentMTPayment extends Controller
             }
         }
 
-        die();
+        die('No hash data');
     }
 }
