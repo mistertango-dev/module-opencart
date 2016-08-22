@@ -47,14 +47,14 @@ class ModelExtensionPaymentMTPayment extends Model
      */
     public function existsCallback($callback)
     {
-	    $exists = $this->db->query(
-		    'SELECT 1 FROM `' . DB_PREFIX . 'mtcallbacks`
+        $exists = $this->db->query(
+            'SELECT 1 FROM `' . DB_PREFIX . 'mtcallbacks`
             WHERE `callback` = \'' . $this->db->escape($callback) . '\''
-	    );
+        );
 
-	    $exists = is_array($exists->row) ? reset($exists->row) : null;
+        $exists = is_array($exists->row) ? reset($exists->row) : null;
 
-	    return $exists ? true : false;
+        return $exists ? true : false;
     }
 
     /**
@@ -78,11 +78,11 @@ class ModelExtensionPaymentMTPayment extends Model
         );
     }
 
-	/**
-	 * @param $transaction_id
-	 * @param $amount
-	 * @return bool
-	 */
+    /**
+     * @param $transaction_id
+     * @param $amount
+     * @return bool
+     */
     public function closeOrder($transaction_id, $amount)
     {
         $order_id = $this->db->query(
@@ -117,9 +117,9 @@ class ModelExtensionPaymentMTPayment extends Model
 
         $order_status_id = $this->config->get('mtpayment_order_success_status_id');
 
-	    $order_total = trim($order_info['total']);
+        $order_total = trim($order_info['total']);
 
-	    if (bcdiv($order_total, 1, 2) != bcdiv($amount, 1, 2)) {
+        if (bcdiv($order_total, 1, 2) != bcdiv($amount, 1, 2)) {
             $order_status_id = $this->config->get('mtpayment_order_error_status_id');
         }
 
@@ -145,34 +145,34 @@ class ModelExtensionPaymentMTPayment extends Model
      */
     public function validateOrder($transaction_id, $amount, $websocket_id = null)
     {
-	    $transaction = explode('_', $transaction_id);
+        $transaction = explode('_', $transaction_id);
 
-	    if (count($transaction) == 2) {
-		    $this->load->language('extension/payment/mtpayment');
-		    $this->load->model('account/order');
-		    $this->load->model('checkout/order');
+        if (count($transaction) == 2) {
+            $this->load->language('extension/payment/mtpayment');
+            $this->load->model('account/order');
+            $this->load->model('checkout/order');
 
-		    $order_id = $transaction[0];
-		    $order_histories = $this->model_account_order->getOrderHistories($order_id);
+            $order_id = $transaction[0];
+            $order_histories = $this->model_account_order->getOrderHistories($order_id);
 
-		    if (empty($order_histories)) {
-			    $comment = $this->language->get('text_instruction') . "\n\n";
-			    $comment .= $this->language->get('text_payment');
+            if (empty($order_histories)) {
+                $comment = $this->language->get('text_instruction') . "\n\n";
+                $comment .= $this->language->get('text_payment');
 
-			    $this->model_checkout_order->addOrderHistory(
-				    $order_id,
-				    $this->config->get('mtpayment_order_pending_status_id'),
-				    $comment,
-				    true
-			    );
-		    }
+                $this->model_checkout_order->addOrderHistory(
+                    $order_id,
+                    $this->config->get('mtpayment_order_pending_status_id'),
+                    $comment,
+                    true
+                );
+            }
 
-		    $this->insertTransaction($transaction_id, $websocket_id, $order_id, $amount);
+            $this->insertTransaction($transaction_id, $websocket_id, $order_id, $amount);
 
-		    return true;
-	    }
+            return true;
+        }
 
-	    return false;
+        return false;
     }
 
     /**

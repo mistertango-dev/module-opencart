@@ -21,9 +21,9 @@ class ControllerExtensionPaymentMTPayment extends Controller
 
         $data['mtpayment_username'] = $this->config->get('mtpayment_username');
         $data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
-	    $data['mtpayment_url_data'] = '/index.php?route=extension/payment/mtpayment/data';
-	    $data['mtpayment_url_confirm'] = '/index.php?route=extension/payment/mtpayment/confirm';
-	    $data['mtpayment_url_history'] = '/index.php?route=extension/payment/mtpayment/history';
+        $data['mtpayment_url_data'] = '/index.php?route=extension/payment/mtpayment/data';
+        $data['mtpayment_url_confirm'] = '/index.php?route=extension/payment/mtpayment/confirm';
+        $data['mtpayment_url_history'] = '/index.php?route=extension/payment/mtpayment/history';
 
         $data['continue'] = $this->url->link('checkout/success');
 
@@ -81,8 +81,7 @@ class ControllerExtensionPaymentMTPayment extends Controller
             $websocket_id = null;
         }
 
-        $this->load->library('currency');
-        $currency = $this->currency->getCode();
+        $currency = $this->session->data['currency'];
         $this->response->setOutput(json_encode(array(
             'success' => true,
             'websocket' => $websocket_id,
@@ -91,9 +90,9 @@ class ControllerExtensionPaymentMTPayment extends Controller
             'amount' => trim($this->currency->format(
                 $order_info['total'],
                 $currency,
-                $this->currency->getValue(),
-                false)
-            ),
+                $this->currency->getValue($currency),
+                false
+            )),
             'currency' => $currency,
             'language' => $this->language->get('code'),
         )));
@@ -238,8 +237,8 @@ class ControllerExtensionPaymentMTPayment extends Controller
         $data['mtpayment_username'] = $this->config->get('mtpayment_username');
         $data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
         $data['mtpayment_url_data'] = '/index.php?route=extension/payment/mtpayment/data';
-	    $data['mtpayment_url_confirm'] = '/index.php?route=extension/payment/mtpayment/confirm';
-	    $data['mtpayment_url_history'] = '/index.php?route=extension/payment/mtpayment/history';
+        $data['mtpayment_url_confirm'] = '/index.php?route=extension/payment/mtpayment/confirm';
+        $data['mtpayment_url_history'] = '/index.php?route=extension/payment/mtpayment/history';
         $data['mtpayment_url_histories'] = '/index.php?route=extension/payment/mtpayment/histories';
 
         $this->document->setTitle($this->language->get('text_order'));
