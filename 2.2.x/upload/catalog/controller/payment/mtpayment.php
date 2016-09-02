@@ -81,8 +81,7 @@ class ControllerPaymentMTPayment extends Controller
             $websocket_id = null;
         }
 
-        $this->load->library('currency');
-        $currency = $this->currency->getCode();
+        $currency = $this->session->data['currency'];
         $this->response->setOutput(json_encode(array(
             'success' => true,
             'websocket' => $websocket_id,
