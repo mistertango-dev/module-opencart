@@ -90,7 +90,7 @@ class ControllerPaymentMTPayment extends Controller
             'amount' => trim($this->currency->format(
                 $order_info['total'],
                 $currency,
-                $this->currency->getValue(),
+                $this->currency->getValue($currency),
                 false)
             ),
             'currency' => $currency,
