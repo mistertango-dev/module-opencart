@@ -46,8 +46,12 @@ class ControllerPaymentMTPayment extends Controller
         $this->response->addHeader('Content-Type', 'application/json');
 
         $customer_email = $this->customer->getEmail();
-
-        if (isset($this->session->data['guest'])) {
+        if (
+            empty($customer_email)
+            && isset($this->session->data['guest'])
+            && isset($this->session->data['guest']['email'])
+            && !empty($this->session->data['guest']['email'])
+        ) {
             $customer_email = $this->session->data['guest']['email'];
         }
 
@@ -108,8 +112,12 @@ class ControllerPaymentMTPayment extends Controller
         $this->response->addHeader('Content-Type', 'application/json');
 
         $customer_email = $this->customer->getEmail();
-
-        if (isset($this->session->data['guest'])) {
+        if (
+            empty($customer_email)
+            && isset($this->session->data['guest'])
+            && isset($this->session->data['guest']['email'])
+            && !empty($this->session->data['guest']['email'])
+        ) {
             $customer_email = $this->session->data['guest']['email'];
         }
 

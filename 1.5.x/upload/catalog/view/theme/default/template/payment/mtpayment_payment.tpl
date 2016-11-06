@@ -17,6 +17,6 @@
     var MTPAYMENT_URL_DATA = "<?php echo $mtpayment_url_data; ?>";
     var MTPAYMENT_URL_CONFIRM = "<?php echo $mtpayment_url_confirm; ?>";
     var MTPAYMENT_URL_HISTORY = "<?php echo $mtpayment_url_history; ?>";
-    var MTPAYMENT_URL_SCRIPT = "https://mistertango.com/resources/scripts/mt.collect.js?v=<?php echo time(); ?>";
+    var MTPAYMENT_URL_SCRIPT = "https://payment.mistertango.com/resources/scripts/mt.collect.js?v=<?php echo time(); ?>";
 </script>
 <script type="text/javascript" src="/catalog/view/javascript/payment/mtpayment.js?v=1.4.1"></script>
