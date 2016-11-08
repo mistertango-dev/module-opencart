@@ -1,7 +1,7 @@
 <?php
 
 // Text
-$_['text_title'] = 'Per internetinę bankinkystę (Swedbank, SEB, DNB ir kiti)';
+$_['text_title'] = 'Per internetinę bankininkystę (Swedbank, SEB, DNB ir kiti)';
 $_['text_instruction'] = 'MisterTango instrukcija';
 $_['text_description'] = 'Pasirinkite MisterTango mokėjimo būdą ir atlikite pavedimą.';
 $_['text_payment'] = 'Laukiame apmokėjimo.';
