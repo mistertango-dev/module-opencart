@@ -101,12 +101,7 @@ class ControllerPaymentMTPayment extends Controller
             'websocket' => $websocket_id,
             'transaction' => $this->session->data['order_id'] . '_' . time(),
             'customer' => $customer_email,
-            'amount' => trim($this->currency->format(
-                $order_info['total'],
-                $currency,
-                $this->currency->getValue(),
-                false)
-            ),
+            'amount' => bcdiv(trim(strip_tags($order_info['total'])), 1, 2),
             'currency' => $currency,
             'language' => $this->language->get('code'),
         )));
