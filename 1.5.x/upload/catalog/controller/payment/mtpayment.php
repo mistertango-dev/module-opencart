@@ -113,25 +113,6 @@ class ControllerPaymentMTPayment extends Controller
     {
         $this->response->addHeader('Content-Type: application/json');
 
-        $customer_email = $this->customer->getEmail();
-        if (
-            empty($customer_email)
-            && isset($this->session->data['guest'])
-            && isset($this->session->data['guest']['email'])
-            && !empty($this->session->data['guest']['email'])
-        ) {
-            $customer_email = $this->session->data['guest']['email'];
-        }
-
-        if (empty($customer_email)) {
-            $this->response->setOutput(json_encode(array(
-                'success' => false,
-                'error' => 'Unknown customer',
-            )));
-
-            return;
-        }
-
         $order_id = null;
 
         if (!empty($this->session->data['order_id'])) {
