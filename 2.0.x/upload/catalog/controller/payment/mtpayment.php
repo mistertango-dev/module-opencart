@@ -85,6 +85,19 @@ class ControllerPaymentMTPayment extends Controller
         $this->load->model('checkout/order');
         $order_info = $this->model_checkout_order->getOrder($order_id);
 
+        if (empty($customer_email) && isset($order_info['email'])) {
+            $customer_email = $order_info['email'];
+        }
+
+        if (empty($customer_email)) {
+            $this->response->setOutput(json_encode(array(
+                'success' => false,
+                'error' => 'Unknown customer',
+            )));
+
+            return;
+        }
+
         $websocket_query = $this->db->query(
             "SELECT * FROM " . DB_PREFIX . "mttransactions WHERE `order` = '" . (int)$order_info['order_id'] . "'"
         );

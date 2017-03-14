@@ -47,15 +47,6 @@ class ControllerExtensionPaymentMTPayment extends Controller
             $customer_email = $this->session->data['guest']['email'];
         }
 
-        if (empty($customer_email)) {
-            $this->response->setOutput(json_encode(array(
-                'success' => false,
-                'error' => 'Unknown customer',
-            )));
-
-            return;
-        }
-
         $order_id = null;
         if (!empty($this->request->get['order']) && $this->request->get['order'] != 'null') {
             $order_id = $this->request->get['order'];
@@ -75,6 +66,19 @@ class ControllerExtensionPaymentMTPayment extends Controller
         $this->load->model('checkout/order');
         $order_info = $this->model_checkout_order->getOrder($order_id);
 
+        if (empty($customer_email) && isset($order_info['email'])) {
+            $customer_email = $order_info['email'];
+        }
+
+        if (empty($customer_email)) {
+            $this->response->setOutput(json_encode(array(
+                'success' => false,
+                'error' => 'Unknown customer',
+            )));
+
+            return;
+        }
+
         $websocket_query = $this->db->query(
             "SELECT * FROM " . DB_PREFIX . "mttransactions WHERE `order` = '" . (int)$order_info['order_id'] . "'"
         );
@@ -85,14 +89,19 @@ class ControllerExtensionPaymentMTPayment extends Controller
             $websocket_id = null;
         }
 
-        $currency = $this->session->data['currency'];
+        $total = trim(strip_tags($this->currency->format(
+            $order_info['total'],
+            $order_info['currency_code'],
+            '',
+            false
+        )));
         $this->response->setOutput(json_encode(array(
             'success' => true,
             'websocket' => $websocket_id,
             'transaction' => $this->session->data['order_id'] . '_' . time(),
             'customer' => $customer_email,
-            'amount' => bcdiv(trim(strip_tags($order_info['total'])), 1, 2),
-            'currency' => $currency,
+            'amount' => $total,
+            'currency' => $order_info['currency_code'],
             'language' => $this->language->get('code'),
         )));
     }
