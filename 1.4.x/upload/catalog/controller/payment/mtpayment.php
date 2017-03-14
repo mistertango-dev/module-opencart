@@ -55,15 +55,6 @@ class ControllerPaymentMTPayment extends Controller
             $customer_email = $this->session->data['guest']['email'];
         }
 
-        if (empty($customer_email)) {
-            $this->response->setOutput(json_encode(array(
-                'success' => false,
-                'error' => 'Unknown customer',
-            )));
-
-            return;
-        }
-
         $order_id = null;
         if (!empty($this->request->get['order']) && $this->request->get['order'] != 'null') {
             $order_id = $this->request->get['order'];
