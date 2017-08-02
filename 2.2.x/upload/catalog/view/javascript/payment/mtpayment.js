@@ -111,6 +111,10 @@ MTPayment = {
                         mrTangoCollect.set.description(MTPayment.transaction);
                         mrTangoCollect.set.lang(MTPayment.language);
 
+                        if (MTPAYMENT_CALLBACK_URL) {
+                            mrTangoCollect.custom = {'callback': MTPAYMENT_CALLBACK_URL};
+                        }
+
                         mrTangoCollect.submit();
 
                         MTPayment.isOfflinePayment = false;
