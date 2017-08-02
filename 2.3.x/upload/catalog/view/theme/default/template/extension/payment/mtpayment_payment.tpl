@@ -20,4 +20,4 @@
     var MTPAYMENT_URL_HISTORY = "<?php echo $mtpayment_url_history; ?>";
     var MTPAYMENT_URL_SCRIPT = "https://payment.mistertango.com/resources/scripts/mt.collect.js?v=<?php echo time(); ?>";
 </script>
-<script type="text/javascript" src="/catalog/view/javascript/extension/payment/mtpayment.js?v=1.4.1"></script>
+<script type="text/javascript" src="/catalog/view/javascript/extension/payment/mtpayment.js?v=1.7.2"></script>
