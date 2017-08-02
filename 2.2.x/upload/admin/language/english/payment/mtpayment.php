@@ -12,6 +12,7 @@ $_['text_mtpayment'] = '<a href="" target="_blank"><img src="view/image/payment/
 // Entry
 $_['entry_username'] = 'MisterTango username';
 $_['entry_secret_key'] = 'MisterTango secret key';
+$_['entry_callback_url'] = 'Callback URL';
 $_['entry_standard_redirect'] = 'Standard redirect';
 $_['entry_total'] = 'Total';
 $_['entry_order_pending_status'] = 'Order pending status';
@@ -24,6 +25,7 @@ $_['entry_sort_order'] = 'Sort Order';
 // Help
 $_['help_username'] = 'Your personal MisterTango username (mostly email) provided by MisterTango authorities';
 $_['help_secret_key'] = 'Your personal MisterTango secret key provided by MisterTango authorities';
+$_['help_callback_url'] = 'MisterTango callback URL that sends data to your shop about payment (Use with "multistore")';
 $_['help_total'] = 'The checkout total the order must reach before this payment method becomes active.';
 
 // Error

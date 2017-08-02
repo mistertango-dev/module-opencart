@@ -13,6 +13,8 @@ class ControllerPaymentMTPayment extends Controller
     {
         $this->load->language('payment/mtpayment');
 
+        $this->load->model('payment/mtpayment');
+
         $this->data['text_instruction'] = $this->language->get('text_instruction');
         $this->data['text_description'] = $this->language->get('text_description');
         $this->data['text_payment'] = $this->language->get('text_payment');
@@ -20,6 +22,7 @@ class ControllerPaymentMTPayment extends Controller
         $this->data['button_confirm'] = $this->language->get('button_confirm');
 
         $this->data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $this->data['mtpayment_callback_url'] = $this->model_payment_mtpayment->getCallbackUrl();
         $this->data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
 	    $this->data['mtpayment_url_data'] = '/index.php?route=payment/mtpayment/data';
 	    $this->data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';
@@ -210,6 +213,7 @@ class ControllerPaymentMTPayment extends Controller
         $this->data['text_history'] = $this->language->get('text_history');
 
         $this->data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $this->data['mtpayment_callback_url'] = $this->model_payment_mtpayment->getCallbackUrl();
         $this->data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
         $this->data['mtpayment_url_data'] = '/index.php?route=payment/mtpayment/data';
 	    $this->data['mtpayment_url_confirm'] = '/index.php?route=payment/mtpayment/confirm';

@@ -58,6 +58,7 @@ class ControllerPaymentMTPayment extends Controller
 
         $this->data['entry_username'] = $this->language->get('entry_username');
         $this->data['entry_secret_key'] = $this->language->get('entry_secret_key');
+        $this->data['entry_callback_url'] = $this->language->get('entry_callback_url');
         $this->data['entry_standard_redirect'] = $this->language->get('entry_standard_redirect');
         $this->data['entry_total'] = $this->language->get('entry_total');
         $this->data['entry_order_pending_status'] = $this->language->get('entry_order_pending_status');
@@ -69,6 +70,7 @@ class ControllerPaymentMTPayment extends Controller
 
         $this->data['help_username'] = $this->language->get('help_username');
         $this->data['help_secret_key'] = $this->language->get('help_secret_key');
+        $this->data['help_callback_url'] = $this->language->get('help_callback_url');
         $this->data['help_total'] = $this->language->get('help_total');
 
         $this->data['button_save'] = $this->language->get('button_save');
@@ -130,6 +132,12 @@ class ControllerPaymentMTPayment extends Controller
             $this->data['mtpayment_secret_key'] = $this->request->post['mtpayment_secret_key'];
         } else {
             $this->data['mtpayment_secret_key'] = $this->config->get('mtpayment_secret_key');
+        }
+
+        if (isset($this->request->post['mtpayment_callback_url'])) {
+            $this->data['mtpayment_callback_url'] = $this->request->post['mtpayment_callback_url'];
+        } else {
+            $this->data['mtpayment_callback_url'] = $this->config->get('mtpayment_callback_url');
         }
 
         if (isset($this->request->post['mtpayment_standard_redirect'])) {
