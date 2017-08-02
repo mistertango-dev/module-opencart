@@ -37,6 +37,13 @@
             </td>
           </tr>
           <tr>
+            <td><?php echo $entry_callback_url; ?></td>
+            <td>
+              <input type="text" name="mtpayment_callback_url" value="<?php echo $mtpayment_callback_url; ?>"
+                     placeholder="<?php echo $entry_callback_url; ?>"/>
+            </td>
+          </tr>
+          <tr>
             <td><?php echo $entry_standard_redirect; ?></td>
             <td>
               <input type="checkbox" name="mtpayment_standard_redirect"

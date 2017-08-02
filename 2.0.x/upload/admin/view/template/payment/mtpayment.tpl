@@ -49,6 +49,16 @@
             </div>
           </div>
           <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-callback-url"><span data-toggle="tooltip"
+                                                                               title="<?php echo $help_callback_url; ?>"><?php echo $entry_callback_url; ?></span></label>
+
+            <div class="col-sm-10">
+              <input type="text" name="mtpayment_callback_url" value="<?php echo $mtpayment_callback_url; ?>"
+                     placeholder="<?php echo $entry_callback_url; ?>" id="input-callback-url"
+                     class="form-control"/>
+            </div>
+          </div>
+          <div class="form-group">
             <label class="col-sm-2 control-label"
                    for="input-standard-redirect"><?php echo $entry_standard_redirect; ?></label>
 
