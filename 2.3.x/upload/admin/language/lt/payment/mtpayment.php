@@ -7,7 +7,7 @@ $_['heading_title'] = 'MisterTango';
 $_['text_payment'] = 'Mokėjimas';
 $_['text_success'] = 'Sėkmingai: Jūs modifikavote MisterTango nustatymus!';
 $_['text_edit'] = 'Redaguoti MisterTango';
-$_['text_mtpayment'] = '<a href="" target="_blank"><img src="view/image/extension/payment/mtpayment_en.png" alt="MisterTango" title="MisterTango" style="border: 1px solid #EEEEEE; max-height: 25px;" /></a>';
+$_['text_mtpayment'] = '<a href="" target="_blank"><img src="view/image/extension/payment/mtpayment_lt.png" alt="MisterTango" title="MisterTango" style="border: 1px solid #EEEEEE; max-height: 25px;" /></a>';
 
 // Entry
 $_['entry_username'] = 'MisterTango vartotojo vardas';

@@ -7,7 +7,7 @@ $_['heading_title'] = 'MisterTango';
 $_['text_payment'] = 'Payment';
 $_['text_success'] = 'Success: You have modified MisterTango details!';
 $_['text_edit'] = 'Edit MisterTango';
-$_['text_mtpayment'] = '<a href="" target="_blank"><img src="view/image/payment/mtpayment_en.png" alt="MisterTango" title="MisterTango" style="border: 1px solid #EEEEEE; max-height: 25px;" /></a>';
+$_['text_mtpayment'] = '<a href="" target="_blank"><img src="view/image/extension/payment/mtpayment_en.png" alt="MisterTango" title="MisterTango" style="border: 1px solid #EEEEEE; max-height: 25px;" /></a>';
 
 // Entry
 $_['entry_username'] = 'MisterTango username';
