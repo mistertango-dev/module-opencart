@@ -1,0 +1,32 @@
+{% if histories %}
+<table id="mtpayment-information-order-histories" class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <td class="text-left">{{ column_date_added }}</td>
+        <td class="text-left">{{ column_status }}</td>
+        <td class="text-left">{{ column_comment }}</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for history in histories %}
+    <tr>
+        <td class="text-left">{{ history.date_added }}</td>
+        <td class="text-left">
+            {{ history.status }}
+            {% if history.status == order_pending_status  and  allow_different_payment %}
+            <p class="jsAllowDifferentPayment">
+                {{ text_email_message }}
+                <a href="#" class="mtpayment-button-pay">
+                    {{ text_click_here }}
+                </a>
+            </p>
+            {% endif %}
+        </td>
+        <td class="text-left">{{ history.comment }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Wrong order</p>
+{% endif %}

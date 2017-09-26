@@ -7,13 +7,12 @@ $_['heading_title'] = 'MisterTango';
 $_['text_payment'] = 'Payment';
 $_['text_success'] = 'Success: You have modified MisterTango details!';
 $_['text_edit'] = 'Edit MisterTango';
-$_['text_mtpayment'] = '<a href="" target="_blank"><img src="view/image/extension/payment/mtpayment_en.png" alt="MisterTango" title="MisterTango" style="border: 1px solid #EEEEEE; max-height: 25px;" /></a>';
+$_['text_mtpayment'] = '<a href="https://mistertango.com/en/" target="_blank"><img src="view/image/extension/payment/mtpayment_en.png" alt="MisterTango" title="MisterTango" style="max-height: 27px;" /></a>';
 
 // Entry
 $_['entry_username'] = 'MisterTango username';
 $_['entry_secret_key'] = 'MisterTango secret key';
 $_['entry_callback_url'] = 'Callback URL';
-$_['entry_standard_redirect'] = 'Standard redirect';
 $_['entry_total'] = 'Total';
 $_['entry_order_pending_status'] = 'Order pending status';
 $_['entry_order_success_status'] = 'Order success status';

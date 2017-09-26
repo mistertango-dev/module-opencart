@@ -7,13 +7,12 @@ $_['heading_title'] = 'MisterTango';
 $_['text_payment'] = 'Mokėjimas';
 $_['text_success'] = 'Sėkmingai: Jūs modifikavote MisterTango nustatymus!';
 $_['text_edit'] = 'Redaguoti MisterTango';
-$_['text_mtpayment'] = '<a href="" target="_blank"><img src="view/image/extension/payment/mtpayment_lt.png" alt="MisterTango" title="MisterTango" style="border: 1px solid #EEEEEE; max-height: 25px;" /></a>';
+$_['text_mtpayment'] = '<a href="https://mistertango.com/lt/" target="_blank"><img src="view/image/extension/payment/mtpayment_lt.png" alt="MisterTango" title="MisterTango" style="max-height: 27px;" /></a>';
 
 // Entry
 $_['entry_username'] = 'MisterTango vartotojo vardas';
 $_['entry_secret_key'] = 'MisterTango slaptas raktas';
 $_['entry_callback_url'] = 'Callback URL';
-$_['entry_standard_redirect'] = 'Standartinis nukreipimas';
 $_['entry_total'] = 'Aktyvavimo suma';
 $_['entry_order_pending_status'] = 'Užsakymo apmokėjimo laukimo būsena';
 $_['entry_order_success_status'] = 'Užsakymo apmokėjimo gavimo būsena';

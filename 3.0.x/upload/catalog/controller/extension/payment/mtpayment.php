@@ -21,14 +21,15 @@ class ControllerExtensionPaymentMTPayment extends Controller
 
         $data['button_confirm'] = $this->language->get('button_confirm');
 
-        $data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $data['mtpayment_username'] = $this->config->get('payment_mtpayment_username');
         $data['mtpayment_callback_url'] = $this->model_extension_payment_mtpayment->getCallbackUrl();
-        $data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
         $data['mtpayment_url_data'] = '/index.php?route=extension/payment/mtpayment/data';
         $data['mtpayment_url_confirm'] = '/index.php?route=extension/payment/mtpayment/confirm';
         $data['mtpayment_url_history'] = '/index.php?route=extension/payment/mtpayment/history';
 
         $data['continue'] = $this->url->link('checkout/success');
+
+        $data['arg_time'] = time();
 
         return $this->load->view('extension/payment/mtpayment_payment', $data);
     }
@@ -160,47 +161,6 @@ class ControllerExtensionPaymentMTPayment extends Controller
                 'order' => $order_info['order_id']
             )));
 
-            // Clear cart related stuff if needed
-            if (
-                !$this->config->get('mtpayment_standard_redirect')
-                && !$offline
-                && isset($this->session->data['order_id'])
-            ) {
-                $this->cart->clear();
-
-                // Add to activity log
-                $this->load->model('account/activity');
-
-                if ($this->customer->isLogged()) {
-                    $activity_data = array(
-                        'customer_id' => $this->customer->getId(),
-                        'name' => $this->customer->getFirstName() . ' ' . $this->customer->getLastName(),
-                        'order_id' => $this->session->data['order_id']
-                    );
-
-                    $this->model_account_activity->addActivity('order_account', $activity_data);
-                } else {
-                    $activity_data = array(
-                        'name' => $this->session->data['guest']['firstname'] . ' ' . $this->session->data['guest']['lastname'],
-                        'order_id' => $this->session->data['order_id']
-                    );
-
-                    $this->model_account_activity->addActivity('order_guest', $activity_data);
-                }
-
-                unset($this->session->data['shipping_method']);
-                unset($this->session->data['shipping_methods']);
-                unset($this->session->data['payment_method']);
-                unset($this->session->data['payment_methods']);
-                unset($this->session->data['comment']);
-                unset($this->session->data['order_id']);
-                unset($this->session->data['coupon']);
-                unset($this->session->data['reward']);
-                unset($this->session->data['voucher']);
-                unset($this->session->data['vouchers']);
-                unset($this->session->data['totals']);
-            }
-
             return;
         }
 
@@ -230,9 +190,8 @@ class ControllerExtensionPaymentMTPayment extends Controller
 
         $data['text_history'] = $this->language->get('text_history');
 
-        $data['mtpayment_username'] = $this->config->get('mtpayment_username');
+        $data['mtpayment_username'] = $this->config->get('payment_mtpayment_username');
         $data['mtpayment_callback_url'] = $this->model_extension_payment_mtpayment->getCallbackUrl();
-        $data['mtpayment_standard_redirect'] = $this->config->get('mtpayment_standard_redirect');
         $data['mtpayment_url_data'] = '/index.php?route=extension/payment/mtpayment/data';
         $data['mtpayment_url_confirm'] = '/index.php?route=extension/payment/mtpayment/confirm';
         $data['mtpayment_url_history'] = '/index.php?route=extension/payment/mtpayment/history';
@@ -265,11 +224,11 @@ class ControllerExtensionPaymentMTPayment extends Controller
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_order'),
-            'href' => '/index.php?route=extension/payment/mtpayment/history&order_id=' . $order_id
+            'href' => '/index.php?route=extension/payment/mtpayment/history&order=' . $order_id
         );
 
         $data['continue'] = '/index.php?route=extension/payment/mtpayment/history';
-        if ($this->config->get('mtpayment_standard_redirect') && isset($this->session->data['order_id'])) {
+        if (isset($this->session->data['order_id'])) {
             $data['continue'] = $this->url->link('checkout/success');
         }
 
@@ -279,6 +238,8 @@ class ControllerExtensionPaymentMTPayment extends Controller
         $data['content_bottom'] = $this->load->controller('common/content_bottom');
         $data['footer'] = $this->load->controller('common/footer');
         $data['header'] = $this->load->controller('common/header');
+
+        $data['arg_time'] = time();
 
         $this->response->setOutput($this->load->view('extension/payment/mtpayment_history', $data));
     }
@@ -311,7 +272,7 @@ class ControllerExtensionPaymentMTPayment extends Controller
             $data['column_status'] = $this->language->get('column_status');
             $data['column_comment'] = $this->language->get('column_comment');
 
-            $order_pending_status_id = $this->config->get('mtpayment_order_pending_status_id');
+            $order_pending_status_id = $this->config->get('payment_mtpayment_order_pending_status_id');
 
             $order_status_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "order_status WHERE order_status_id = '" . (int)$order_pending_status_id . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");
 
@@ -342,6 +303,12 @@ class ControllerExtensionPaymentMTPayment extends Controller
 
             $data['allow_different_payment'] = $allow_different_payment;
 
+						if( ! $this->customer->isLogged() && ( ! isset( $this->session->data['order_id'] ) || $this->session->data['order_id'] != $order_id ) ) {
+							$data = array(
+			            'histories' => array(),
+			        );
+						}
+
             $html = $this->load->view('extension/payment/mtpayment_histories', $data);
         }
 
@@ -368,7 +335,7 @@ class ControllerExtensionPaymentMTPayment extends Controller
 
         if ($hash !== false) {
             $data = json_decode(
-                $this->model_extension_payment_mtpayment->decrypt($hash, $this->config->get('mtpayment_secret_key'))
+                $this->model_extension_payment_mtpayment->decrypt($hash, $this->config->get('payment_mtpayment_secret_key'))
             );
             $data->custom = isset($data->custom) ? json_decode($data->custom) : null;
 

@@ -1,0 +1,22 @@
+<h2>{{ text_instruction }}</h2>
+<p><b>{{ text_description }}</b></p>
+<div class="well well-sm">
+    <p>{{ text_payment }}</p>
+</div>
+<div class="buttons">
+    <div class="pull-right">
+        <button type="button" id="button-confirm" class="btn btn-primary mtpayment-button-pay">
+            {{ button_confirm }}
+        </button>
+    </div>
+</div>
+<script type="text/javascript">
+    var MTPAYMENT_USERNAME = "{{ mtpayment_username }}";
+    var MTPAYMENT_CALLBACK_URL = "{{ mtpayment_callback_url }}";
+    var MTPAYMENT_URL_CONTINUE = "{{ continue }}";
+    var MTPAYMENT_URL_DATA = "{{ mtpayment_url_data }}";
+    var MTPAYMENT_URL_CONFIRM = "{{ mtpayment_url_confirm }}";
+    var MTPAYMENT_URL_HISTORY = "{{ mtpayment_url_history }}";
+    var MTPAYMENT_URL_SCRIPT = "https://payment.mistertango.com/resources/scripts/mt.collect.js?v={{ arg_time }}";
+</script>
+<script type="text/javascript" src="/catalog/view/javascript/extension/payment/mtpayment.js?v=1.7.2"></script>

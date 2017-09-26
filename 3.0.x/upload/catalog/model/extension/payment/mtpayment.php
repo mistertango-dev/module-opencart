@@ -10,11 +10,11 @@ class ModelExtensionPaymentMTPayment extends Model
      */
     public function getCallbackUrl()
     {
-        $callbackUrl = trim($this->config->get('mtpayment_callback_url'));
+        $callbackUrl = trim($this->config->get('payment_mtpayment_callback_url'));
         if ($callbackUrl) {
             return $this->encrypt(
                 $callbackUrl,
-                $this->config->get('mtpayment_secret_key')
+                $this->config->get('payment_mtpayment_secret_key')
             );
         }
 
@@ -30,11 +30,11 @@ class ModelExtensionPaymentMTPayment extends Model
     {
         $this->load->language('extension/payment/mtpayment');
 
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('mtpayment_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('payment_mtpayment_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 
-        if ($this->config->get('mtpayment_total') > 0 && $this->config->get('mtpayment_total') > $total) {
+        if ($this->config->get('payment_mtpayment_total') > 0 && $this->config->get('payment_mtpayment_total') > $total) {
             $status = false;
-        } elseif (!$this->config->get('mtpayment_geo_zone_id')) {
+        } elseif (!$this->config->get('payment_mtpayment_geo_zone_id')) {
             $status = true;
         } elseif ($query->num_rows) {
             $status = true;
@@ -49,7 +49,7 @@ class ModelExtensionPaymentMTPayment extends Model
                 'code' => 'mtpayment',
                 'title' => $this->language->get('text_title'),
                 'terms' => '',
-                'sort_order' => $this->config->get('mtpayment_sort_order')
+                'sort_order' => $this->config->get('payment_mtpayment_sort_order')
             );
         }
 
@@ -130,7 +130,7 @@ class ModelExtensionPaymentMTPayment extends Model
             return false;
         }
 
-        $order_status_id = $this->config->get('mtpayment_order_success_status_id');
+        $order_status_id = $this->config->get('payment_mtpayment_order_success_status_id');
 
         $total = trim(strip_tags($this->currency->format(
             $order_info['total'],
@@ -140,7 +140,7 @@ class ModelExtensionPaymentMTPayment extends Model
         )));
 
         if (bcdiv($total, 1, 4) != bcdiv($amount, 1, 4)) {
-            $order_status_id = $this->config->get('mtpayment_order_error_status_id');
+            $order_status_id = $this->config->get('payment_mtpayment_order_error_status_id');
         }
 
         $this->load->language('extension/payment/mtpayment');
@@ -181,13 +181,13 @@ class ModelExtensionPaymentMTPayment extends Model
 
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
-                    $this->config->get('mtpayment_order_pending_status_id'),
+                    $this->config->get('payment_mtpayment_order_pending_status_id'),
                     $comment,
                     true
                 );
             }
 
-            $this->insertTransaction($transaction_id, $websocket_id, $order_id, $amount);
+						$this->insertTransaction($transaction_id, $websocket_id, $order_id, $amount);
 
             return true;
         }
@@ -203,6 +203,15 @@ class ModelExtensionPaymentMTPayment extends Model
      */
     public function insertTransaction($transaction, $websocket, $order, $amount)
     {
+			$order_id = $this->db->query(
+					'SELECT `order`
+					FROM `' . DB_PREFIX . 'mttransactions`
+					WHERE `transaction` = \'' . $this->db->escape($transaction) . '\''
+			);
+
+			$order_id = is_array($order_id->row) ? reset($order_id->row) : null;
+
+			if (empty($order_id)) {
         $this->db->query(
             "INSERT INTO " . DB_PREFIX . "mttransactions
             (
@@ -219,6 +228,7 @@ class ModelExtensionPaymentMTPayment extends Model
                 '" . $this->db->escape($amount) . "'
             )"
         );
+			}
     }
 
     /**
