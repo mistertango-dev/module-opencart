@@ -1,0 +1,30 @@
+{{ header }}
+<div class="container">
+    <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="row">
+        <div id="content">{{ content_top }}
+            <h1>{{ heading_title }}</h1>
+
+            <h3>{{ text_history }}</h3>
+            {{ histories }}
+            {{ content_bottom }}</div>
+        </div>
+</div>
+<script type="text/javascript">
+    var MTPAYMENT_ORDER_ID = "{{ order_id }}";
+    var MTPAYMENT_USERNAME = "{{ mtpayment_username }}";
+    var MTPAYMENT_CALLBACK_URL = "{{ mtpayment_callback_url }}";
+    var MTPAYMENT_URL_CONTINUE = "{{ continue }}";
+    var MTPAYMENT_URL_DATA = "{{ mtpayment_url_data }}";
+    var MTPAYMENT_URL_CONFIRM = "{{ mtpayment_url_confirm }}";
+    var MTPAYMENT_URL_HISTORY = "{{ mtpayment_url_history }}";
+    var MTPAYMENT_URL_HISTORIES = "{{ mtpayment_url_histories }}";
+    var MTPAYMENT_URL_SCRIPT = "https://payment.mistertango.com/resources/scripts/mt.collect.js?v={{ arg_time }}";
+</script>
+<script type="text/javascript" src="/catalog/view/javascript/extension/payment/mtpayment.js?v=1.7.2"></script>
+<script type="text/javascript" src="/catalog/view/javascript/extension/payment/mtpayment_history.js?v=1.7.2"></script>
+{{ footer }}
